@@ -42,7 +42,7 @@ You should receive a JSON response with `predicted_class`, `label`, `confidence`
 Build and run the container from the `pd/` directory (where `Dockerfile` lives):
 
 ```bash
-cd /home/naveen/vscode/pd
+cd pd
 docker build -t poison-detection .
 docker run --rm -p 8000:8000 poison-detection
 ```
@@ -76,7 +76,7 @@ Use this function inside other Python code by importing from `main` if you run t
 To create a repo and push this project:
 
 ```bash
-cd /home/naveen/vscode/pd
+cd pd
 git init
 git add .
 git commit -m "Initial commit: poison detection API"
