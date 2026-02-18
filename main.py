@@ -47,6 +47,15 @@ def detect_endpoint(request: DescriptionRequest):
     """Endpoint to detect if a description is poisoned."""
     return detect_poison(request.description)
 
+@app.post("/batch_detect", response_model=list[PredictionResponse])
+def batch_detect_endpoint(requests: list[DescriptionRequest]):
+    """Endpoint to detect if multiple descriptions are poisoned."""
+    results = []
+    for req in requests:
+        result = detect_poison(req.description)
+        results.append(result)
+    return results
+
 
 @app.get("/health")
 def health_check():
