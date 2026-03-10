@@ -32,7 +32,7 @@ RUN useradd -m -u 10001 modeluser && \
     chown -R modeluser:modeluser /app
 
 # Switch to non-root user
-USER modeluser
+USER 10001
 
 # Expose port (documentation only, not published)
 EXPOSE 8000
