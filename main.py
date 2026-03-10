@@ -1,9 +1,18 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from setfit import SetFitModel
 
 # Initialize FastAPI app
 app = FastAPI(title="Poison Detection API")
+
+# Allow all CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Load the model at startup
 model = SetFitModel.from_pretrained("poison_detection_model")
