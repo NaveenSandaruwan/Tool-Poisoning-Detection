@@ -6,7 +6,7 @@ from setfit import SetFitModel
 app = FastAPI(title="Poison Detection API")
 
 # Load the model at startup
-model = SetFitModel.from_pretrained("poison_detection_model_v2")
+model = SetFitModel.from_pretrained("poison_detection_model")
 
 # Label mapping
 LABEL_MAP = {0: "Safe", 1: "Tool Poisoning"}

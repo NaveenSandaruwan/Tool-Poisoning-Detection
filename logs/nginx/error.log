@@ -1,0 +1,2 @@
+2026/03/10 06:05:22 [error] 30#30: *2 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.143.2, server: localhost, request: "GET /api/v2/poison/health HTTP/1.1", upstream: "http://172.19.0.2:8000/health", host: "localhost"
+2026/03/10 06:43:57 [error] 30#30: *9 connect() failed (111: Connection refused) while connecting to upstream, client: 192.168.143.2, server: localhost, request: "GET /api/v2/poison/health HTTP/1.1", upstream: "http://172.19.0.2:8000/health", host: "localhost"

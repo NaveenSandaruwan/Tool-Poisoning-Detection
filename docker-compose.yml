@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # Nginx reverse proxy - single entry point
+  nginx:
+    image: nginx:alpine
+    container_name: model-gateway
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - poison-detection-v2
+    restart: unless-stopped
+    networks:
+      - model-network
+
+  # Poison Detection Model v2 (current model)
+  poison-detection-v2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: poison-detection-v2
+    expose:
+      - "8000"  # Internal only, not exposed to host
+    environment:
+      - MODEL_VERSION=v2
+      - MODEL_PATH=poison_detection_model
+    restart: unless-stopped
+    networks:
+      - model-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 2G
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Poison Detection Model v1 (legacy - uncomment when needed)
+  # poison-detection-v1:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: poison-detection-v1
+  #   expose:
+  #     - "8000"
+  #   environment:
+  #     - MODEL_VERSION=v1
+  #     - MODEL_PATH=poison_detection_model
+  #   restart: unless-stopped
+  #   networks:
+  #     - model-network
+  #   deploy:
+  #     resources:
+  #       limits:
+  #         cpus: '1.0'
+  #         memory: 2G
+
+networks:
+  model-network:
+    driver: bridge
+
+volumes:
+  nginx-logs:
