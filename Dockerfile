@@ -28,7 +28,7 @@ RUN gdown "https://drive.google.com/uc?id=127S5LIzjnoWlnYCX_6nLvb2pS2Yy0bEA" -O 
     test -d poison_detection_model || (echo "ERROR: poison_detection_model not found after extraction" && exit 1)
 
 # Create non-root user for security
-RUN useradd -m -u 1000 modeluser && \
+RUN useradd -m -u 10001 modeluser && \
     chown -R modeluser:modeluser /app
 
 # Switch to non-root user
