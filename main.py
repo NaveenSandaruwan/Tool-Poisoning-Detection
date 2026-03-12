@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from setfit import SetFitModel
+from optimum.bettertransformer import BetterTransformer
+import torch
 
 # Initialize FastAPI app
 app = FastAPI(title="Poison Detection API")
@@ -14,9 +16,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load the model at startup
+
+
+# 1. Load the model
 model = SetFitModel.from_pretrained("poison_detection_model")
 
+# 2. Convert the internal sentence_transformer to a Faster version
+# This works on most CPUs and doesn't require the 'to_onnx' method
+model.model_body = BetterTransformer.transform(model.model_body)
+
+# 3. Critical for CPU utilization:
+torch.set_num_threads(2)
 
 # Label mapping
 LABEL_MAP = {0: "Safe", 1: "Tool Poisoning"}
