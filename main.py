@@ -2,8 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from setfit import SetFitModel
-from optimum.bettertransformer import BetterTransformer
 import torch
+import os
+
 
 # Initialize FastAPI app
 app = FastAPI(title="Poison Detection API")
@@ -18,13 +19,19 @@ app.add_middleware(
 
 
 
-# 1. Load the model
+# 1. SET THREADING FIRST (Critical for CPU utilization)
+# Use the number of physical cores you've allocated
+os.environ["OMP_NUM_THREADS"] = "4" 
+os.environ["MKL_NUM_THREADS"] = "4"
+torch.set_num_threads(4)
+
+# 2. LOAD MODEL NORMALLY
 model = SetFitModel.from_pretrained("poison_detection_model")
 
-# 2. Convert the internal sentence_transformer to a Faster version
-# This works on most CPUs and doesn't require the 'to_onnx' method
-model.model_body = BetterTransformer.transform(model.model_body)
-
+# 3. USE PYTORCH COMPILE (The modern way to speed up inference)
+# This replaces the need for ONNX/BetterTransformer in PyTorch 2.0+
+if hasattr(torch, 'compile'):
+    model.model_body = torch.compile(model.model_body)
 # 3. Critical for CPU utilization:
 torch.set_num_threads(2)
 

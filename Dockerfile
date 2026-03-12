@@ -16,7 +16,7 @@ RUN apt-get update && \
 # Upgrade pip and install dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir setfit "transformers<5.0.0" "scikit-learn>=1.8.0" fastapi uvicorn[standard] gdown
+    pip install --no-cache-dir setfit "transformers<5.0.0" "scikit-learn>=1.8.0" fastapi uvicorn[standard] gdown optimum
 
 # Copy application files
 COPY main.py ./
