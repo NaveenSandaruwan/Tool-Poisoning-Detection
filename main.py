@@ -17,6 +17,7 @@ app.add_middleware(
 # Load the model at startup
 model = SetFitModel.from_pretrained("poison_detection_model")
 
+
 # Label mapping
 LABEL_MAP = {0: "Safe", 1: "Tool Poisoning"}
 
@@ -32,6 +33,24 @@ class PredictionResponse(BaseModel):
     confidence: float
     is_poisoned: bool
 
+def batch_detect(descriptions: list[str]) -> list[dict]:
+  
+    # 1. Run the model ONCE on the entire list (Vectorized)
+    preds = model.predict(descriptions)
+    probs = model.predict_proba(descriptions)
+    
+    # 2. Format results
+    results = []
+    for i, desc in enumerate(descriptions):
+        predicted_class = int(preds[i])
+        results.append({
+            "description": desc,
+            "predicted_class": predicted_class,
+            "label": LABEL_MAP[predicted_class],
+            "confidence": float(probs[i][predicted_class]),
+            "is_poisoned": predicted_class == 1
+        })
+    return results
 
 def detect_poison(description: str) -> dict:
     """Detect if a description contains tool poisoning."""
@@ -59,11 +78,8 @@ def detect_endpoint(request: DescriptionRequest):
 @app.post("/batch_detect", response_model=list[PredictionResponse])
 def batch_detect_endpoint(requests: list[DescriptionRequest]):
     """Endpoint to detect if multiple descriptions are poisoned."""
-    results = []
-    for req in requests:
-        result = detect_poison(req.description)
-        results.append(result)
-    return results
+    descriptions = [req.description for req in requests]
+    return batch_detect(descriptions)
 
 
 @app.get("/health")
