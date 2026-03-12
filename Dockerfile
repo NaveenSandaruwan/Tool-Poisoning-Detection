@@ -16,7 +16,7 @@ RUN apt-get update && \
 # Upgrade pip and install dependencies
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu && \
-    pip install --no-cache-dir setfit "transformers<5.0.0" "scikit-learn>=1.8.0" fastapi uvicorn[standard] gdown optimum
+    pip install --no-cache-dir setfit "transformers<5.0.0" "scikit-learn>=1.8.0" fastapi uvicorn[standard] gdown optimum gunicorn
 
 # Copy application files
 COPY main.py ./
@@ -42,4 +42,4 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
     CMD curl -f http://localhost:8000/health || exit 1
 
 # Run FastAPI server with production settings
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1", "--log-level", "info"]
+CMD ["gunicorn", "-k", "uvicorn.workers.UvicornWorker", "-w", "4", "-b", "0.0.0.0:8000", "main:app"]
