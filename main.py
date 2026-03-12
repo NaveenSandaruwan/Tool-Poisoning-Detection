@@ -21,9 +21,9 @@ app.add_middleware(
 
 # 1. SET THREADING FIRST (Critical for CPU utilization)
 # Use the number of physical cores you've allocated
-os.environ["OMP_NUM_THREADS"] = "4" 
-os.environ["MKL_NUM_THREADS"] = "4"
-torch.set_num_threads(4)
+os.environ["OMP_NUM_THREADS"] = "8" 
+os.environ["MKL_NUM_THREADS"] = "8"
+torch.set_num_threads(8)
 
 # 2. LOAD MODEL NORMALLY
 model = SetFitModel.from_pretrained("poison_detection_model")
@@ -33,7 +33,6 @@ model = SetFitModel.from_pretrained("poison_detection_model")
 if hasattr(torch, 'compile'):
     model.model_body = torch.compile(model.model_body)
 # 3. Critical for CPU utilization:
-torch.set_num_threads(2)
 
 # Label mapping
 LABEL_MAP = {0: "Safe", 1: "Tool Poisoning"}
