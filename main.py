@@ -21,9 +21,9 @@ app.add_middleware(
 
 # 1. SET THREADING FIRST (Critical for CPU utilization)
 # Use the number of physical cores you've allocated
-os.environ["OMP_NUM_THREADS"] = "8" 
-os.environ["MKL_NUM_THREADS"] = "8"
-torch.set_num_threads(8)
+os.environ["OMP_NUM_THREADS"] = "16" 
+os.environ["MKL_NUM_THREADS"] = "16"
+torch.set_num_threads(16)
 
 # 2. LOAD MODEL NORMALLY
 model = SetFitModel.from_pretrained("poison_detection_model")
