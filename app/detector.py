@@ -1,7 +1,6 @@
 from functools import lru_cache
 import logging
 
-from huggingface_hub import login
 from setfit import SetFitModel
 
 from app.config import Settings, get_settings
@@ -15,10 +14,6 @@ LABEL_MAP = {0: "Safe", 1: "Tool Poisoning"}
 class ToolPoisoningDetector:
     def __init__(self, settings: Settings):
         self.settings = settings
-
-        if settings.hf_token:
-            login(token=settings.hf_token)
-
         self.model = SetFitModel.from_pretrained(settings.model_source)
         self._compile_model()
 
