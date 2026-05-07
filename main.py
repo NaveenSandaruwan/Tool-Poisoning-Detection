@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from setfit import SetFitModel
+from huggingface_hub import login
 import torch
 import os
-
 
 # Initialize FastAPI app
 app = FastAPI(title="Poison Detection API")
@@ -17,22 +17,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# 1. AUTHENTICATION & THREADING
+# Get token from environment variable
+hf_token = os.getenv("HF_TOKEN")
+if hf_token:
+    login(token=hf_token)
 
-
-# 1. SET THREADING FIRST (Critical for CPU utilization)
-# Use the number of physical cores you've allocated
 os.environ["OMP_NUM_THREADS"] = "4" 
 os.environ["MKL_NUM_THREADS"] = "4"
 torch.set_num_threads(4)
 
-# 2. LOAD MODEL NORMALLY
-model = SetFitModel.from_pretrained("poison_detection_model")
+# 2. LOAD MODEL FROM HUGGING FACE
+model_id = "NaveenSandaruwanJayasooriya/tool-poisoning-detection"
+model = SetFitModel.from_pretrained(model_id)
 
-# 3. USE PYTORCH COMPILE (The modern way to speed up inference)
-# This replaces the need for ONNX/BetterTransformer in PyTorch 2.0+
+# 3. OPTIMIZATION
 if hasattr(torch, 'compile'):
     model.model_body = torch.compile(model.model_body)
-# 3. Critical for CPU utilization:
+
 
 # Label mapping
 LABEL_MAP = {0: "Safe", 1: "Tool Poisoning"}
