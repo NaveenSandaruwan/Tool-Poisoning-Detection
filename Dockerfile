@@ -16,6 +16,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # Copy application files
 COPY main.py ./
+COPY app ./app
 
 # Create non-root user for security
 RUN useradd -m -u 10001 modeluser && \
