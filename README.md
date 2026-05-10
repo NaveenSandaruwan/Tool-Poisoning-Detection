@@ -92,25 +92,6 @@ Use this function inside other Python code by importing from `main` if you run t
 - If you see pickling errors referencing scikit-learn versions, rebuild the container after updating the base image or installing the correct `scikit-learn` version.
 - If GPU support is desired, replace the `torch` CPU wheel with an appropriate CUDA wheel and adjust the Docker base image.
 
-## GitHub
-
-To create a repo and push this project:
-
-```bash
-git init
-git add .
-git commit -m "Initial commit: poison detection API"
-git branch -M main
-git remote add origin https://github.com/NaveenSandaruwan/Tool-Poisoning-Detection.git
-git push -u origin main
-```
-
-If `origin` already exists and you want to replace it:
-
-```bash
-git remote set-url origin https://github.com/NaveenSandaruwan/Tool-Poisoning-Detection.git
-git push -u origin main
-```
 
 ## License
 
