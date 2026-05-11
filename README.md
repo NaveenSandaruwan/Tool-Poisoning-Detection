@@ -90,10 +90,3 @@ Use this function inside other Python code by importing from `main` if you run t
 - If GPU support is desired, replace the `torch` CPU wheel with an appropriate CUDA wheel and adjust the Docker base image.
 
 
-## License
-
-Add a LICENSE file if you wish; otherwise this repo has no explicit license.
-
-## Contact
-
-Open an issue or contact the maintainer for questions.
