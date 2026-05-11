@@ -13,8 +13,7 @@ Poison Detection API - a small FastAPI service that uses a Hugging Face SetFit m
 
 The service reads these environment variables:
 
-- `HF_TOKEN` - optional Hugging Face token used to authenticate before loading the model.
-- `HF_MODEL_ID` - optional Hugging Face model ID. Defaults to `NaveenSandaruwanJayasooriya/tool-poisoning-detection`.
+- `HF_MODEL_ID` - optional Hugging Face model ID. Defaults to `wso2/tool-poisoning-detection`.
 - `MODEL_SOURCE` - optional explicit model source that overrides `HF_MODEL_ID`.
 - `MODEL_THREAD_COUNT` - optional thread count for Torch. Defaults to `4`.
 - `USE_TORCH_COMPILE` - optional toggle for `torch.compile`. Defaults to enabled.

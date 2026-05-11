@@ -3,7 +3,7 @@ from functools import lru_cache
 import os
 
 
-DEFAULT_MODEL_ID = "NaveenSandaruwanJayasooriya/tool-poisoning-detection"
+DEFAULT_MODEL_ID = "wso2/tool-poisoning-detection"
 
 
 @dataclass(frozen=True)
