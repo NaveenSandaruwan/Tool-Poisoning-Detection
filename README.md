@@ -57,7 +57,7 @@ Build and run the container from the `Tool-Poisoning-Detection/` directory (wher
 
 ```bash
 docker build -t poison-detection .
-docker run -d --name poison-detector -p 8000:8000 --env-file .env poison-detection
+docker run -d --name poison-detector -p 8000:8000 poison-detection
 docker logs -f poison-detector
 ```
 
