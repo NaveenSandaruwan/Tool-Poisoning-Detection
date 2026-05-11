@@ -3,6 +3,11 @@
 
 Poison Detection API - a small FastAPI service that uses a Hugging Face SetFit model to detect whether a natural-language description contains "tool poisoning" prompts (instructions intended to manipulate or leak secrets, override safety, or expose sensitive operations).
 
+## Libries 
+
+- setfit  ==   1.1.3
+- transformers   ==   4.57.6
+
 ## Contents
 
 - `main.py` - thin FastAPI entrypoint that exposes `app`, `detect_poison(description)`, and `batch_detect(descriptions)`.
