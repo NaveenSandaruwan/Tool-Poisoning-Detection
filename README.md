@@ -1,13 +1,22 @@
 
 # Tool Poisoning Detection
 
-Poison Detection API - a small FastAPI service that uses a local SetFit model to detect whether a natural-language description contains "tool poisoning" prompts (instructions intended to manipulate or leak secrets, override safety, or expose sensitive operations).
+Poison Detection API - a small FastAPI service that uses a Hugging Face SetFit model to detect whether a natural-language description contains "tool poisoning" prompts (instructions intended to manipulate or leak secrets, override safety, or expose sensitive operations).
 
 ## Contents
 
-- `main.py` - FastAPI app with `/detect` and `/health` endpoints. Exposes `detect_poison(description)` function.
-- `poison_detection_model/` - pretrained SetFit model files (already included in this repo).
-- `Dockerfile` - builds a container with the app and model.
+- `main.py` - thin FastAPI entrypoint that exposes `app`, `detect_poison(description)`, and `batch_detect(descriptions)`.
+- `app/` - application package containing config, detector, runtime setup, schemas, and API wiring.
+- `Dockerfile` - builds a container for the API.
+
+## Configuration
+
+The service reads these environment variables:
+
+- `HF_MODEL_ID` - optional Hugging Face model ID. Defaults to `wso2/tool-poisoning-detection`.
+- `MODEL_SOURCE` - optional explicit model source that overrides `HF_MODEL_ID`.
+- `MODEL_THREAD_COUNT` - optional thread count for Torch. Defaults to `4`.
+- `USE_TORCH_COMPILE` - optional toggle for `torch.compile`. Defaults to enabled.
 
 ## Quickstart (local)
 
@@ -24,6 +33,7 @@ pip install setfit "transformers<5.0.0" "scikit-learn>=1.8.0" fastapi uvicorn
 2. Run the FastAPI app:
 
 ```bash
+export HF_TOKEN=your_huggingface_token
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
@@ -39,12 +49,12 @@ You should receive a JSON response with `predicted_class`, `label`, `confidence`
 
 ## Quickstart (Docker)
 
-Build and run the container from the `pd/` directory (where `Dockerfile` lives):
+Build and run the container from the `Tool-Poisoning-Detection/` directory (where `Dockerfile` lives):
 
 ```bash
-cd pd
 docker build -t poison-detection .
-docker run --rm -p 8000:8000 poison-detection
+docker run -d --name poison-detector -p 8000:8000 --env-file .env poison-detection
+docker logs -f poison-detector
 ```
 
 Then call the same `/detect` endpoint on `http://localhost:8000`.
@@ -76,30 +86,11 @@ Use this function inside other Python code by importing from `main` if you run t
 
 ## Notes and troubleshooting
 
-- The included SetFit model was trained with scikit-learn 1.8.x; the Dockerfile pins a compatible environment (Python 3.11).
+- The model is loaded from Hugging Face at startup. If you see authentication errors, verify `HF_TOKEN` and the model ID.
+- The Dockerfile pins a compatible environment (Python 3.11) and installs the runtime dependencies needed by SetFit.
 - If you see pickling errors referencing scikit-learn versions, rebuild the container after updating the base image or installing the correct `scikit-learn` version.
 - If GPU support is desired, replace the `torch` CPU wheel with an appropriate CUDA wheel and adjust the Docker base image.
 
-## GitHub
-
-To create a repo and push this project:
-
-```bash
-cd pd
-git init
-git add .
-git commit -m "Initial commit: poison detection API"
-git branch -M main
-git remote add origin https://github.com/NaveenSandaruwan/Tool-Poisoning-Detection.git
-git push -u origin main
-```
-
-If `origin` already exists and you want to replace it:
-
-```bash
-git remote set-url origin https://github.com/NaveenSandaruwan/Tool-Poisoning-Detection.git
-git push -u origin main
-```
 
 ## License
 
