@@ -33,7 +33,6 @@ pip install setfit "transformers<5.0.0" "scikit-learn>=1.8.0" fastapi uvicorn
 2. Run the FastAPI app:
 
 ```bash
-export HF_TOKEN=your_huggingface_token
 uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
@@ -86,7 +85,6 @@ Use this function inside other Python code by importing from `main` if you run t
 
 ## Notes and troubleshooting
 
-- The model is loaded from Hugging Face at startup. If you see authentication errors, verify `HF_TOKEN` and the model ID.
 - The Dockerfile pins a compatible environment (Python 3.11) and installs the runtime dependencies needed by SetFit.
 - If you see pickling errors referencing scikit-learn versions, rebuild the container after updating the base image or installing the correct `scikit-learn` version.
 - If GPU support is desired, replace the `torch` CPU wheel with an appropriate CUDA wheel and adjust the Docker base image.
